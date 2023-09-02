@@ -10,6 +10,8 @@ import { PortfolioController } from './portfolio/portfolio.controller';
 import { FileUploadService } from './file-upload/file-upload.service';
 import { SharedModule } from './shared.module';
 import { GalleryModule } from './gallery/gallery.module';
+import { PartnerModule } from './partner/partner.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { GalleryModule } from './gallery/gallery.module';
     UsersModule,
     SharedModule,
     GalleryModule,
+    PartnerModule,
+    EmailModule,
   ],
   controllers: [AppController, PortfolioController],
   providers: [AppService, PortfolioService, FileUploadService],

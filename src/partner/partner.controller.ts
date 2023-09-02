@@ -13,13 +13,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { PartnerService } from './partner.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { GalleryService } from './gallery.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@Controller('gallery')
-export class GalleryController {
-  constructor(private readonly galleryService: GalleryService) {}
+@Controller('partner')
+export class PartnerController {
+  constructor(private readonly partnerService: PartnerService) {}
 
   @UseGuards(AuthGuard)
   @Post('upload')
@@ -37,7 +37,7 @@ export class GalleryController {
     image: Express.Multer.File,
   ) {
     try {
-      const newImage = this.galleryService.uploadImage(image);
+      const newImage = this.partnerService.uploadImage(image);
       return response.status(HttpStatus.CREATED).json({
         message: 'Image has been created successfully',
         newImage,
@@ -50,7 +50,7 @@ export class GalleryController {
   @Get()
   async getImages(@Res() response) {
     try {
-      const imageData = await this.galleryService.getAllImages();
+      const imageData = await this.partnerService.getAllImages();
       return response.status(HttpStatus.OK).json({
         message: 'All image datas found successfully',
         imageData,
@@ -64,7 +64,7 @@ export class GalleryController {
   @Delete('/:id')
   async deletePortfolio(@Res() response, @Param('id') imageId: string) {
     try {
-      const deletedImage = await this.galleryService.deleteImage(imageId);
+      const deletedImage = await this.partnerService.deleteImage(imageId);
       return response.status(HttpStatus.OK).json({
         message: 'Image deleted successfully',
         deletedImage,

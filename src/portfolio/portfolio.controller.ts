@@ -13,16 +13,20 @@ import {
   Put,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
 import { CreatePortfolioDTO } from './createPortfolio.dto';
 import { UpdatePortfolioDto } from './updatePortfolio.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
+  
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async createPortfolio(
@@ -47,6 +51,8 @@ export class PortfolioController {
       newPortfolio,
     });
   }
+
+  @UseGuards(AuthGuard)
   @Put('/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updatePortfolio(
@@ -76,6 +82,7 @@ export class PortfolioController {
       });
     
   }
+
   @Get()
   async getPortfolios(@Res() response) {
     try {
@@ -101,6 +108,8 @@ export class PortfolioController {
       return response.status(err.status).json(err.response);
     }
   }
+
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   async deletePortfolio(@Res() response, @Param('id') portfolioId: string) {
     try {
