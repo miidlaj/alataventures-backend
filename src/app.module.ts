@@ -16,7 +16,7 @@ import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://alataventures:alataventures@cluster0.nrgq5e1.mongodb.net/?retryWrites=true&w=majority',
+      'mongodb+srv://alataventures:alataventures@cluster0.4tpnoht.mongodb.net/?retryWrites=true&w=majority',
       { dbName: 'alataventures' },
     ),
     MongooseModule.forFeature([{ name: 'Portfolio', schema: PortfolioSchema }]),

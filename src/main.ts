@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const serviceAccount = require('../src/firebase/alataventuress-firebase-adminsdk-3hvdu-0035a60956.json');
+  const serviceAccount = require('../src/firebase/alataventures-1bb4a-firebase-adminsdk-ogw0z-d38691c63b.json');
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

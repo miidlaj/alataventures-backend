@@ -9,8 +9,8 @@ export class EmailService {
     this.transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'mumidlaj@gmail.com',
-        pass: 'httyfjbojbnuoalk',
+        user: 'alataventures.tech@gmail.com',
+        pass: 'laljuzxustrvvghb',
       },
     });
   }
@@ -23,7 +23,7 @@ export class EmailService {
     message: string,
   ) {
     const mailOptions = {
-      from: 'mumidlaj@gmail.com',
+      from: 'alataventures.tech@gmail.com',
       to: emailAddress,
       subject,
       text: `
