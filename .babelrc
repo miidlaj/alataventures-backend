@@ -1,4 +1,0 @@
-{
-    "presets": ["@babel/preset-env"],
-    "exclude": ["node_modules/@nestjs/common/file-stream/streamable-file.js"]
-  }
