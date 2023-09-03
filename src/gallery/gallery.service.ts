@@ -19,7 +19,7 @@ export class GalleryService {
   async uploadImage(image: Express.Multer.File): Promise<GalleryDocument> {
     try {
       const newImage = new this.galleryModel();
-      this.fileUploadService
+      await this.fileUploadService
         .uploadFileToFirebase(image, 'gallery-images')
         .then((url) => (newImage.imageUrl = url));
       return newImage.save();

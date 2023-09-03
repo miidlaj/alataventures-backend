@@ -14,9 +14,8 @@ async function bootstrap() {
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket: process.env.BUCKET_URL,
+    storageBucket: 'gs://alataventures-1bb4a.appspot.com',
   });
-
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
   await app.listen(8000);

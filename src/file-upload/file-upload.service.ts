@@ -13,6 +13,7 @@ export class FileUploadService {
     folder: string,
   ): Promise<string> {
     const bucket = admin.storage().bucket();
+    console.log('bukcet ', bucket);
     const name = this.saltedMd5(file.originalname, 'SUPER-S@LT!');
     const fileName = name + this.path.extname(file.originalname);
 
@@ -20,10 +21,14 @@ export class FileUploadService {
       destination: `${folder}/${fileName}`, // Specify the folder in Firebase Storage
     };
 
-    await bucket
-      .file(fileUploadOptions.destination)
-      .createWriteStream()
-      .end(file.buffer);
+    try {
+      bucket
+        .file(fileUploadOptions.destination)
+        .createWriteStream()
+        .end(file.buffer);
+    } catch (err) {
+      console.log(err);
+    }
 
     // await bucket.upload(file.buffer, fileUploadOptions);
     // Get the URL of the uploaded file

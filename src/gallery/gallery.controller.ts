@@ -37,6 +37,7 @@ export class GalleryController {
     image: Express.Multer.File,
   ) {
     try {
+      console.log(image);
       const newImage = this.galleryService.uploadImage(image);
       return response.status(HttpStatus.CREATED).json({
         message: 'Image has been created successfully',
