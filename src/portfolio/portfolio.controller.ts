@@ -95,6 +95,20 @@ export class PortfolioController {
       return response.status(err.status).json(err.response);
     }
   }
+
+  @Get('latest')
+  async getLatestPortfolios(@Res() response) {
+    try {
+      const portfolioData = await this.portfolioService.getLatestPortfolios();
+      return response.status(HttpStatus.OK).json({
+        message: 'Portfolio datas found successfully',
+        portfolioData,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
+  }
+
   @Get('/:id')
   async getPortfolio(@Res() response, @Param('id') portfolioId: string) {
     try {

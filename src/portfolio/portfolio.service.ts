@@ -77,6 +77,15 @@ export class PortfolioService {
 
     return existingPortfolio.save();
   }
+
+  async getLatestPortfolios(): Promise<PortfolioDocument[]> {
+    const portfolioData = await this.porfolioModel.find().sort({ createdAt: -1 }).limit(6);
+    if (!portfolioData || portfolioData.length == 0) {
+      throw new NotFoundException('Portfolio data not found!');
+    }
+    return portfolioData;
+  }
+
   async getAllPortfolios(): Promise<PortfolioDocument[]> {
     const portfolioData = await this.porfolioModel.find();
     if (!portfolioData || portfolioData.length == 0) {
