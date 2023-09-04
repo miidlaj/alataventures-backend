@@ -1,4 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import * as admin from 'firebase-admin';
 
 @Injectable()
@@ -13,7 +17,6 @@ export class FileUploadService {
     folder: string,
   ): Promise<string> {
     const bucket = admin.storage().bucket();
-    console.log('bukcet ', bucket);
     const name = this.saltedMd5(file.originalname, 'SUPER-S@LT!');
     const fileName = name + this.path.extname(file.originalname);
 
@@ -27,7 +30,9 @@ export class FileUploadService {
         .createWriteStream()
         .end(file.buffer);
     } catch (err) {
-      console.log(err);
+      throw new ServiceUnavailableException(
+        'This service is unavailable at the moment',
+      );
     }
 
     // await bucket.upload(file.buffer, fileUploadOptions);
@@ -42,6 +47,12 @@ export class FileUploadService {
 
   async deleteFile(path: string) {
     const bucket = admin.storage().bucket();
-    await bucket.file(path).delete();
+    try {
+      await bucket.file(path).delete();
+    } catch (err) {
+      throw new ServiceUnavailableException(
+        'This service is unavailable at the moment',
+      );
+    }
   }
 }

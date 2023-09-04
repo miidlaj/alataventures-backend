@@ -48,7 +48,7 @@ export class GalleryService {
       throw new NotFoundException(`Image #${imageId} not found`);
     } else {
       const prefixToRemove =
-        'https://storage.googleapis.com/alataventuress.appspot.com/';
+        'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
       const imgUrl = deletedImage.imageUrl;
       const queryStringStart = '?GoogleAccessId=';
       const parts = imgUrl.split(queryStringStart);

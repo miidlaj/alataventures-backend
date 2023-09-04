@@ -54,7 +54,7 @@ export class PortfolioService {
       if (image) {
 
         try {
-          const prefixToRemove = "https://storage.googleapis.com/alataventuress.appspot.com/";
+          const prefixToRemove = 'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
           const imgUrl = existingPortfolio.imageUrl
           const queryStringStart = "?GoogleAccessId=";
           const parts = imgUrl.split(queryStringStart);
@@ -109,6 +109,14 @@ export class PortfolioService {
       await this.porfolioModel.findByIdAndDelete(portfolioId);
     if (!deletedPortfolio) {
       throw new NotFoundException(`Portfolio #${portfolioId} not found`);
+    } else {
+      const prefixToRemove =
+      'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
+      const imgUrl = deletedPortfolio.imageUrl;
+      const queryStringStart = '?GoogleAccessId=';
+      const parts = imgUrl.split(queryStringStart);
+      const path = parts[0].replace(prefixToRemove, '');
+      this.fileUploadService.deleteFile(path);
     }
     return deletedPortfolio;
   }

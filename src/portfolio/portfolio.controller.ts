@@ -25,7 +25,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
-  
+
   @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
@@ -42,14 +42,18 @@ export class PortfolioController {
     )
     image: Express.Multer.File,
   ) {
-    const newPortfolio = await this.portfolioService.createPortfolio(
-      createPortfolioDto,
-      image,
-    );
-    return response.status(HttpStatus.CREATED).json({
-      message: 'Portfolio has been created successfully',
-      newPortfolio,
-    });
+    try {
+      const newPortfolio = await this.portfolioService.createPortfolio(
+        createPortfolioDto,
+        image,
+      );
+      return response.status(HttpStatus.CREATED).json({
+        message: 'Portfolio has been created successfully',
+        newPortfolio,
+      });
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -65,12 +69,12 @@ export class PortfolioController {
           new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
       }),
     )
     image: Express.Multer.File,
   ) {
-    
+    try {
       const existingPortfolio = await this.portfolioService.updatePortfolio(
         portfolioId,
         updatePortfolioDto,
@@ -80,7 +84,9 @@ export class PortfolioController {
         message: 'Portfolio has been successfully updated',
         existingPortfolio,
       });
-    
+    } catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
   @Get()
@@ -130,7 +136,7 @@ export class PortfolioController {
       const deletedPortfolio =
         await this.portfolioService.deletePortfolio(portfolioId);
       return response.status(HttpStatus.OK).json({
-        message: 'Student deleted successfully',
+        message: 'Portfolio deleted successfully',
         deletedPortfolio,
       });
     } catch (err) {

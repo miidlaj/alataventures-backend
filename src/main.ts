@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
+import { HttpExceptionFilter } from './exception.middleware';
 
 async function bootstrap() {
   dotenv.config();
@@ -17,6 +18,7 @@ async function bootstrap() {
     storageBucket: 'gs://alataventures-1bb4a.appspot.com',
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors();
   await app.listen(8000);
 }
