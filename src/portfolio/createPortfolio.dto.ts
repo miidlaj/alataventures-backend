@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 export class CreatePortfolioDTO {
     
   @IsString()
-  @MaxLength(30)
+  @MaxLength(128)
   @IsNotEmpty()
   readonly title: string;
 
