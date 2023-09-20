@@ -24,10 +24,11 @@ import { ConfigModule } from '@nestjs/config';
     //     uri: config.get<string>('MONGO_URL'),
     //   }),
     // }),
-    MongooseModule.forRoot(
-      'mongodb+srv://alataventures:alataventures@cluster0.4tpnoht.mongodb.net/?retryWrites=true&w=majority',
-      { dbName: 'alataventures' },
-    ),
+    // MongooseModule.forRoot(
+    //   'mongodb+srv://alataventures:alataventures@cluster0.4tpnoht.mongodb.net/?retryWrites=true&w=majority',
+    //   { dbName: 'alataventures' },
+    // ),
+    MongooseModule.forRoot(process.env.MONGO_URL, { dbName: 'alataventures' }),
     MongooseModule.forFeature([{ name: 'Portfolio', schema: PortfolioSchema }]),
     AuthModule,
     UsersModule,
