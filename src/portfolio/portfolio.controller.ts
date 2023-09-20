@@ -11,6 +11,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -90,9 +91,15 @@ export class PortfolioController {
   }
 
   @Get()
-  async getPortfolios(@Res() response) {
+  async getPortfolios(
+    @Res() response,
+    @Query('page') page: string = "1",
+    @Query('pageSize') pageSize: string = "6",
+  ) {
+
+    
     try {
-      const portfolioData = await this.portfolioService.getAllPortfolios();
+      const portfolioData = await this.portfolioService.getAllPortfolios(page, pageSize);
       return response.status(HttpStatus.OK).json({
         message: 'All portfolio datas found successfully',
         portfolioData,
@@ -100,6 +107,7 @@ export class PortfolioController {
     } catch (err) {
       return response.status(err.status).json(err.response);
     }
+
   }
 
   @Get('latest')

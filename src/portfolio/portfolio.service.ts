@@ -52,21 +52,20 @@ export class PortfolioService {
       throw new NotFoundException(`POrtfolio #${portfolioId} not found`);
     } else {
       if (image) {
-
         try {
-          const prefixToRemove = 'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
-          const imgUrl = existingPortfolio.imageUrl
-          const queryStringStart = "?GoogleAccessId=";
+          const prefixToRemove =
+            'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
+          const imgUrl = existingPortfolio.imageUrl;
+          const queryStringStart = '?GoogleAccessId=';
           const parts = imgUrl.split(queryStringStart);
-          const path = parts[0].replace(prefixToRemove, "");
+          const path = parts[0].replace(prefixToRemove, '');
           this.fileUploadService.deleteFile(path);
 
           this.fileUploadService
-          .uploadFileToFirebase(image, 'portfolio-images')
-          .then((url) => {
-            
-            existingPortfolio.imageUrl = url;
-          });
+            .uploadFileToFirebase(image, 'portfolio-images')
+            .then((url) => {
+              existingPortfolio.imageUrl = url;
+            });
         } catch (err) {
           const error = new Error('Cannot upload images');
           error['statusCode'] = 503; // HTTP status code for conflict
@@ -79,21 +78,91 @@ export class PortfolioService {
   }
 
   async getLatestPortfolios(): Promise<PortfolioDocument[]> {
-    const portfolioData = await this.porfolioModel.find().sort({ createdAt: -1 }).limit(6);
+    const aggregationPipeline = [
+      {
+        $group: {
+          _id: '$status',
+          portfolios: { $push: '$$ROOT' },
+        },
+      },
+      {
+        $project: {
+          status: '$_id',
+          portfolios: { $slice: ['$portfolios', 6] },
+          _id: 0,
+        },
+      },
+      {
+        $unwind: '$portfolios',
+      },
+    ];
+
+    const portfolioData = await this.porfolioModel
+      .aggregate(aggregationPipeline)
+      .exec();
+
     if (!portfolioData || portfolioData.length == 0) {
       throw new NotFoundException('Portfolio data not found!');
     }
-    return portfolioData;
+
+    const portfolios = portfolioData.map((item) => item.portfolios);
+
+    const combinedPortfolios = portfolios.reduce(
+      (acc, curr) => acc.concat(curr),
+      [],
+    );
+
+    return combinedPortfolios;
+
+    // const portfolioData = await this.porfolioModel.find().sort({ createdAt: -1 }).limit(6);
+    // if (!portfolioData || portfolioData.length == 0) {
+    //   throw new NotFoundException('Portfolio data not found!');
+    // }
+    // return portfolioData;
   }
 
-  async getAllPortfolios(): Promise<PortfolioDocument[]> {
-    const portfolioData = await this.porfolioModel.find();
-    if (!portfolioData || portfolioData.length == 0) {
-      throw new NotFoundException('Portfolio data not found!');
+  async getAllPortfolios(
+    page: string,
+    size: string
+  ): Promise<{ data: PortfolioDocument; count: number }> {
+
+    try {      
+      const pageSize = parseInt(size);
+
+      const offset = (parseInt(page) - 1) * pageSize;
+
+      const aggregation = [
+        {
+          $facet: {
+            items: [
+              { $skip: offset }, 
+              { $limit: pageSize }, 
+            ],
+            totalCount: [{ $count: 'value' }],
+          },
+        },
+        {
+          $unwind: '$totalCount',
+        },
+      ];
+
+      console.log(aggregation);
+      
+      const [result] = await this.porfolioModel.aggregate(aggregation);
+      console.log(result);
+      
+      // const portfolioData = await this.porfolioModel.find().skip(offset).limit(pageSize).exec();
+      const portfolioData = result?.items;
+      const count = result?.totalCount;
+      if (!portfolioData || portfolioData.length == 0) {
+        throw new NotFoundException('Portfolio data not found!');
+      }
+      return { data: portfolioData, count: count };
+    } catch (err) {
+      console.log(err);
     }
-    return portfolioData;
   }
-  
+
   async getPortfolio(portfolioId: string): Promise<PortfolioDocument> {
     const existingPortfolio = await this.porfolioModel
       .findById(portfolioId)
@@ -111,7 +180,7 @@ export class PortfolioService {
       throw new NotFoundException(`Portfolio #${portfolioId} not found`);
     } else {
       const prefixToRemove =
-      'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
+        'https://storage.googleapis.com/alataventures-1bb4a.appspot.com/';
       const imgUrl = deletedPortfolio.imageUrl;
       const queryStringStart = '?GoogleAccessId=';
       const parts = imgUrl.split(queryStringStart);

@@ -12,9 +12,18 @@ import { SharedModule } from './shared.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { PartnerModule } from './partner/partner.module';
 import { EmailModule } from './email/email.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (config: ConfigService) => ({
+    //     uri: config.get<string>('MONGO_URL'),
+    //   }),
+    // }),
     MongooseModule.forRoot(
       'mongodb+srv://alataventures:alataventures@cluster0.4tpnoht.mongodb.net/?retryWrites=true&w=majority',
       { dbName: 'alataventures' },

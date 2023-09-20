@@ -24,6 +24,7 @@ export class GalleryService {
         .then((url) => (newImage.imageUrl = url));
       return newImage.save();
     } catch (err) {
+      console.log(err);
       throw new ServiceUnavailableException(
         "Can't upload image at the moment!",
       );
