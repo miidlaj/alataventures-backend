@@ -47,9 +47,10 @@ let PortfolioController = class PortfolioController {
             return response.status(err.status).json(err.response);
         }
     }
-    async getPortfolios(response, page = "1", pageSize = "6") {
+    async getPortfolios(response, page = "1", pageSize = "6", type = 'ALL') {
         try {
-            const portfolioData = await this.portfolioService.getAllPortfolios(page, pageSize);
+            console.log(type);
+            const portfolioData = await this.portfolioService.getAllPortfolios(page, pageSize, type);
             return response.status(common_1.HttpStatus.OK).json({
                 message: 'All portfolio datas found successfully',
                 portfolioData,
@@ -136,8 +137,9 @@ __decorate([
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Query)('page')),
     __param(2, (0, common_1.Query)('pageSize')),
+    __param(3, (0, common_1.Query)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:paramtypes", [Object, String, String, String]),
     __metadata("design:returntype", Promise)
 ], PortfolioController.prototype, "getPortfolios", null);
 __decorate([

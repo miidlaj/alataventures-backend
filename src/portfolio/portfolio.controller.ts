@@ -95,11 +95,14 @@ export class PortfolioController {
     @Res() response,
     @Query('page') page: string = "1",
     @Query('pageSize') pageSize: string = "6",
+    @Query('type') type: string = 'ALL',
   ) {
 
     
     try {
-      const portfolioData = await this.portfolioService.getAllPortfolios(page, pageSize);
+      console.log(type);
+      
+      const portfolioData = await this.portfolioService.getAllPortfolios(page, pageSize, type);
       return response.status(HttpStatus.OK).json({
         message: 'All portfolio datas found successfully',
         portfolioData,

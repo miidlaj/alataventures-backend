@@ -123,35 +123,40 @@ export class PortfolioService {
 
   async getAllPortfolios(
     page: string,
-    size: string
+    size: string,
+    type: string,
   ): Promise<{ data: PortfolioDocument; count: number }> {
-
-    try {      
+    try {
       const pageSize = parseInt(size);
 
       const offset = (parseInt(page) - 1) * pageSize;
 
-      const aggregation = [
+      const aggregation: any[] = [
+        {
+          $match: {
+            // Filter based on the 'type' field if it's not 'ALL'
+            ...(type !== 'ALL' && { status: type }),
+          },
+        },
         {
           $facet: {
             items: [
-              { $skip: offset }, 
-              { $limit: pageSize }, 
+              // Skip and limit
+              { $skip: offset },
+              { $limit: pageSize },
             ],
-            totalCount: [{ $count: 'value' }],
+            totalCount: [{ $count: 'value' }], // Count the total matching documents
           },
         },
         {
           $unwind: '$totalCount',
         },
+        // Sort by 'status' field in ascending order if 'type' is not 'ALL'
+        ...(type !== 'ALL' ? [{ $sort: { status: 1 } }] : []),
       ];
 
-      console.log(aggregation);
-      
       const [result] = await this.porfolioModel.aggregate(aggregation);
-      console.log(result);
-      
-      // const portfolioData = await this.porfolioModel.find().skip(offset).limit(pageSize).exec();
+
       const portfolioData = result?.items;
       const count = result?.totalCount;
       if (!portfolioData || portfolioData.length == 0) {

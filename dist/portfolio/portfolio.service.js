@@ -102,11 +102,17 @@ let PortfolioService = class PortfolioService {
         const combinedPortfolios = portfolios.reduce((acc, curr) => acc.concat(curr), []);
         return combinedPortfolios;
     }
-    async getAllPortfolios(page, size) {
+    async getAllPortfolios(page, size, type) {
         try {
             const pageSize = parseInt(size);
+            console.log(type);
             const offset = (parseInt(page) - 1) * pageSize;
             const aggregation = [
+                {
+                    $match: {
+                        ...(type !== 'ALL' && { status: type }),
+                    },
+                },
                 {
                     $facet: {
                         items: [
@@ -119,12 +125,12 @@ let PortfolioService = class PortfolioService {
                 {
                     $unwind: '$totalCount',
                 },
+                ...(type !== 'ALL' ? [{ $sort: { status: 1 } }] : []),
             ];
-            console.log(aggregation);
             const [result] = await this.porfolioModel.aggregate(aggregation);
-            console.log(result);
             const portfolioData = result?.items;
             const count = result?.totalCount;
+            console.log(result);
             if (!portfolioData || portfolioData.length == 0) {
                 throw new common_1.NotFoundException('Portfolio data not found!');
             }

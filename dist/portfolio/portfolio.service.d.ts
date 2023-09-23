@@ -11,7 +11,7 @@ export declare class PortfolioService {
     createPortfolio(createPortfolioDTO: CreatePortfolioDTO, image: Express.Multer.File): Promise<PortfolioDocument>;
     updatePortfolio(portfolioId: string, updatePortfolioDTO: UpdatePortfolioDto, image: Express.Multer.File): Promise<PortfolioDocument>;
     getLatestPortfolios(): Promise<PortfolioDocument[]>;
-    getAllPortfolios(page: string, size: string): Promise<{
+    getAllPortfolios(page: string, size: string, type: string): Promise<{
         data: PortfolioDocument;
         count: number;
     }>;
