@@ -105,7 +105,6 @@ let PortfolioService = class PortfolioService {
     async getAllPortfolios(page, size, type) {
         try {
             const pageSize = parseInt(size);
-            console.log(type);
             const offset = (parseInt(page) - 1) * pageSize;
             const aggregation = [
                 {
@@ -130,7 +129,6 @@ let PortfolioService = class PortfolioService {
             const [result] = await this.porfolioModel.aggregate(aggregation);
             const portfolioData = result?.items;
             const count = result?.totalCount;
-            console.log(result);
             if (!portfolioData || portfolioData.length == 0) {
                 throw new common_1.NotFoundException('Portfolio data not found!');
             }

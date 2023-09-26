@@ -2,24 +2,24 @@
 import { Module, Global } from '@nestjs/common';
 import * as saltedMd5 from 'salted-md5';
 import * as path from 'path';
-import * as multer from 'multer';
+import multer from 'multer'; // Import as a namespace
 
 @Global() // Mark the module as global
 @Module({
   providers: [
     {
-      provide: 'SaltedMd5', // Custom provider token
+      provide: 'SaltedMd5',
       useValue: saltedMd5,
     },
     {
-      provide: 'Path', // Custom provider token
+      provide: 'Path',
       useValue: path,
     },
     {
-      provide: 'Multer', // Custom provider token
-      useValue: multer({ storage: multer.memoryStorage() }),
+      provide: 'Multer',
+      useFactory: () => multer({ storage: multer.memoryStorage() }), // Use a factory function
     },
   ],
-  exports: ['SaltedMd5', 'Path', 'Multer'], // Export the providers for use in other modules
+  exports: ['SaltedMd5', 'Path', 'Multer'],
 })
 export class SharedModule {}
