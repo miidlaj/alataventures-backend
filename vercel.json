@@ -15,7 +15,7 @@
   ],
   "headers": [
     {
-      "source": "/service-worker.js",
+      "source": "/api/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
