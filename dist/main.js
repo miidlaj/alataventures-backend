@@ -28,8 +28,16 @@ const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const admin = __importStar(require("firebase-admin"));
 const exception_middleware_1 = require("./exception.middleware");
+const platform_express_1 = require("@nestjs/platform-express");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const expressApp = require('express')();
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(expressApp));
+    app.enableCors({
+        origin: 'https://www.alataventures.com',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    });
     const serviceAccount = {
         type: 'service_account',
         project_id: 'alataventures-1bb4a',

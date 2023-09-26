@@ -17,7 +17,7 @@ let AppService = class AppService {
         this.configService = configService;
     }
     getHello() {
-        return process.env.MONGO_URL;
+        return 'visit: alataventures.com';
     }
     getMongoUrl() {
         return process.env.MONGO_URL;

@@ -3,9 +3,23 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { HttpExceptionFilter } from './exception.middleware';
+import { ExpressAdapter } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const expressApp = require('express')(); // Create an Express.js app
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(expressApp),
+  );
+
+  // Configure CORS options
+  app.enableCors({
+    origin: 'https://www.alataventures.com', // Allow requests from this origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+    credentials: true, // Enable credentials (cookies, HTTP authentication)
+  });
 
   const serviceAccount = {
     type: 'service_account',
