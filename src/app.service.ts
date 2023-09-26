@@ -6,7 +6,7 @@ export class AppService {
   constructor(private configService: ConfigService) {}
 
   getHello(): string {
-    return process.env.MONGO_URL;
+    return 'visit: alataventures.com';
   }
 
   getMongoUrl(): string {
